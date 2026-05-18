@@ -22,4 +22,8 @@ function_descriptions = """\
     手を振る。
 
 8. speak(text: str):
-    textの内容を音声に変換してスピーカーで再生する。"""
+    textの内容を音声に変換してスピーカーで再生する。
+
+17. analyze_camera() -> str:
+    カメラ画像の状況を説明した文が返ってくる。
+"""
