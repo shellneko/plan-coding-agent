@@ -23,6 +23,9 @@ def damp():
     requests.post(f"{SERVER_URL}/api/go2/damp")
     return "その場に伏せました"
 
+def jump():
+    requests.post(f"{SERVER_URL}/api/go2/jump")
+    return "ジャンプしました"
 
 def sit():
     requests.post(f"{SERVER_URL}/api/go2/sit")
@@ -54,13 +57,13 @@ def dance():
     return "ダンスしました"
 
 
-def analyze_camera():
+def call_vlm(query: str):
     response = requests.get(f"{SERVER_URL}/api/go2/get_image")
     data = response.json()
     img = data["image"]
     message = HumanMessage(
         content=[
-            {"type": "text", "text": "この画像を簡潔に説明してください"},
+            {"type": "text", "text": query},
             {
                 "type": "image_url",
                 "image_url": {"url": f"data:image/jpeg;base64,{img}"},
@@ -68,7 +71,7 @@ def analyze_camera():
         ]
     )
 
-    llm = ChatOpenAI(model="gpt-4.1", temperature=0)
+    llm = ChatOpenAI(model="gpt-5.5", temperature=0, reasoning_effort="none")
 
     res = llm.invoke([message])
     return res.content
@@ -96,7 +99,7 @@ def query_camera(query: str):
     )
 
     model = ChatOpenAI(
-        model="gpt-4.1",
+        model="gpt-4.1-mini-2025-04-14",
         temperature=0,
     ).with_structured_output(QueryOutput)
     res = model.invoke([message])

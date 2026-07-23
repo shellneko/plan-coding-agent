@@ -18,9 +18,7 @@ def query_text(text: str, query: str):
     return res.is_match
 
 
-def generate_text(query: str):
-    llm = ChatOpenAI(model="gpt-4.1-nano", temperature=0)
-    res = llm.invoke(
-        f"クエリーの内容に従ってテキスト・単語を生成してください。テキストであればできるだけ短く、喋って話す文でお願いします。：\nクエリー: {query}"
-    )
+def call_llm(query: str):
+    llm = ChatOpenAI(model="gpt-5.5", temperature=0, reasoning_effort="none")
+    res = llm.invoke(query)
     return res.content

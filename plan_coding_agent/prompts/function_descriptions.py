@@ -41,8 +41,6 @@ function_descriptions = f"""\
 
 13. nav(target_waypoint: str) -> bool:
     指定したウェイポイントに自律ナビゲーションする。ナビゲーションに成功したらTrue、失敗したらFalseを返す。
-    指定できるウェイポイントの一覧は以下の通りである：
-    {str(waypoints)}
 
 14. set_waypoint(waypoint_name: str):
     指定した名前で、現在地点をウェイポイントとして追加する。
@@ -53,6 +51,12 @@ function_descriptions = f"""\
 16. get_waypoint_list() -> str:
     現在のウェイポイントのリストを取得する。戻り値は文字列である（例：　ウェイポイントがない場合は"[]", ある場合は"['A', 'B', 'C']"という感じ）。
 
-17. generate_text(query: str) -> str:
-    クエリーの指示通りのテキスト・単語を生成する（例1： query="しりとりで「りんご」の次の単語。ただしすでに[ごま, ゴリラ]は使われている。, 例2: query="「こんにちは」への返事"）
+17. call_llm(query: str) -> str:
+    queryをLLMに入力し、その出力を得る
+
+18. call_vlm(query: text) -> str:
+    queryとカメラ画像をVLMに入力し、その出力を得る
+
+19. jump():
+    前方にジャンプする
 """

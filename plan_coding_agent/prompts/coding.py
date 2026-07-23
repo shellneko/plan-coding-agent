@@ -1,6 +1,10 @@
 from langchain_core.prompts import ChatPromptTemplate
 
 from .function_descriptions import function_descriptions
+from plan_coding_agent.utils import get_waypoint_list
+
+waypoints = get_waypoint_list()
+
 
 system_prompt = f"""\
 # Instruct
@@ -17,6 +21,13 @@ system_prompt = f"""\
 あなたが使用できる関数は以下の通りです。
 
 {function_descriptions}
+
+# Rules
+・ナビゲーションを行う際は、必ずウェイポイントを把握し、正しいウェイポイントを決定してください。
+
+# Waypoints
+現在登録されているウェイポイントの一覧は以下の通りです。
+{waypoints}
 """
 
 prompt_template = ChatPromptTemplate(
