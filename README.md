@@ -1,8 +1,70 @@
 # Plan Coding Agent
 
-Unitree Go2を、OpenAIを利用したAIエージェントから音声またはテキストで操作するためのプロジェクトです。Go2の基本動作、カメラ画像の確認、登録済みウェイポイントへのナビゲーションなどを自然言語で指示できます。
+自然言語の指示からロボットの行動計画を立案し、その計画を実行するためのPython制御コードを生成・実行するAIエージェントを実装したリポジトリです。
+
+対象ロボットはUnitree Go2です。利用者は音声またはテキストで目的を指示するだけで、AIエージェントが利用可能なロボット機能と登録済みウェイポイントを考慮して具体的な手順へ分解し、Go2の基本動作、発話、カメラ画像の認識、Navigation2による自律移動などを組み合わせた制御コードを生成します。
 
 各コマンドは、特に記載がない限りリポジトリのルートディレクトリで実行してください。
+
+## AIエージェントの処理フロー
+
+自然言語の入力は、次の流れでロボットの動作へ変換されます。
+
+1. 音声またはテキストから利用者の指示を受け取ります。
+2. Planning Agentが指示の目的と前提条件を整理し、利用可能な機能だけを使った行動計画を作成します。
+3. Coding Agentが行動計画を、ロボット制御関数を呼び出すPythonコードへ変換します。
+4. 生成されたコードを抽出して一時スクリプトを作成し、別のPythonプロセスで実行します。
+5. 制御関数がGo2 APIまたはNavigation2 APIを呼び出し、ロボットを動作させます。
+
+```mermaid
+flowchart LR
+    User["利用者<br/>音声／テキスト"] --> Input["入力インターフェース"]
+    Input --> Planning["Planning Agent<br/>行動計画の生成"]
+    Planning --> Coding["Coding Agent<br/>Python制御コードの生成"]
+    Coding --> Executor["コード抽出・実行"]
+    Executor --> Functions["ロボット制御関数"]
+
+    Functions --> Go2API["Go2 FastAPI Server"]
+    Go2API --> SDK["Unitree SDK2<br/>Cyclone DDS"]
+    SDK --> Go2["Unitree Go2"]
+
+    Functions --> NavAPI["Navigation2 FastAPI Server"]
+    NavAPI --> Nav2["ROS 2 / Navigation2"]
+    Nav2 --> Go2
+
+    Functions --> OpenAI["OpenAI API<br/>音声・画像認識・発話"]
+```
+
+生成コードは`plan_coding_agent/functions/`で公開している制御関数を使用するようプロンプトで制約されています。生成されたPythonコードを実際に実行する構成のため、信頼できる環境と利用者のもとで動作させてください。
+
+## システム構成
+
+システムは、主に次のコンポーネントで構成されています。
+
+- **入力インターフェース**: `run_agent.py`がopenWakeWordによるウェイクワード検出と音声認識を担当し、`run_agent_text.py`が対話形式のテキスト入力を受け付けます。
+- **Planning Agent**: 自然言語の指示、利用可能なロボット機能、登録済みウェイポイントから、実行可能な行動計画を生成します。
+- **Coding Agent**: 行動計画から、移動、発話、画像認識、ナビゲーションなどの関数を組み合わせたPythonコードを生成します。
+- **コード実行部**: LLMの応答からPythonコードブロックを抽出し、実行用スクリプトとしてサブプロセスで実行します。
+- **ロボット制御関数**: AIエージェントが使用できる機能を`plan_coding_agent/functions/`に定義しています。Go2制御、ナビゲーション、音声、画像認識などを共通のPython関数として提供します。
+- **Go2制御API**: FastAPIとUnitree SDK2を使用し、移動、姿勢、ジェスチャー、カメラ画像取得などをGo2へ指示します。
+- **ナビゲーションAPI**: FastAPIとROS 2の`rclpy`を使用して、Navigation2への目的地送信と現在位置取得を提供します。
+- **外部サービス**: OpenAI APIを行動計画・コード生成、音声認識、音声合成、カメラ画像の認識に使用します。
+
+Go2制御APIとナビゲーションAPIは、AIエージェント本体とは別のプロセスとして起動します。必要に応じて、それぞれをGo2やROS 2へ接続できる別のコンピューター上で実行することもできます。
+
+## 使用技術
+
+| 分類 | 使用技術 | 用途 |
+| --- | --- | --- |
+| 言語・実行環境 | Python 3.12以上、uv | 依存関係管理とアプリケーション実行 |
+| AIエージェント | LangChain、LangChain OpenAI | プロンプト構築、行動計画とコード生成 |
+| AIサービス | OpenAI API | LLM、音声認識、音声合成、画像認識 |
+| Web API | FastAPI、Uvicorn、Requests | AIエージェントとロボット制御系のHTTP通信 |
+| Go2制御 | Unitree SDK2 for Python、Cyclone DDS | Go2の動作制御とカメラ画像取得 |
+| 自律移動 | ROS 2、Navigation2、rclpy、TF2 | 目的地への移動、自己位置と座標変換の取得 |
+| 音声入力 | openWakeWord、PyAudio、WebSockets | ウェイクワード検出とリアルタイム音声入力 |
+| 音声出力 | OpenAI TTS、pydub | AIエージェントによる発話と効果音の再生 |
+| 設定・データ | python-dotenv、PyYAML | 環境変数とウェイポイントの管理 |
 
 ## インストール
 
