@@ -1,13 +1,15 @@
 import numpy as np
 import pyaudio
 from openwakeword.model import Model
+from pathlib import Path
 
 from .audio_io import AudioIO
 
+MODEL_PATH = Path(__file__).resolve().parent.parent / "wakeword_models" / "hey_mycroft_v0.1.onnx"
 
 class WakeWord:
     def __init__(
-        self, model_path="./hey_mycroft_v0.1.onnx", inference_framework="onnx"
+        self, model_path=str(MODEL_PATH), inference_framework="onnx"
     ):
         audio_config = {
             "format": pyaudio.paInt16,

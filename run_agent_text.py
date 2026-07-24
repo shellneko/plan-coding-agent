@@ -1,12 +1,9 @@
 from plan_coding_agent.agent_chain import agent_chain
-from plan_coding_agent.utils import play_mp3, stt
+from plan_coding_agent.utils import play_mp3
 
-from plan_coding_agent.utils.wakeword import WakeWord
-
-wwd = WakeWord(model_path="./hey_mycroft_v0.1.onnx")
 
 while True:
-    text = input(">")
+    text = input("> ")
     print(f"[INFO] ユーザー入力: {text}")
 
     play_mp3("./sounds/start_transcribe.mp3")

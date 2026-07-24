@@ -7,7 +7,6 @@ class QueryTextOutput(BaseModel):
         description="入力テキストの内容とクエリーが一致しているかどうか"
     )
 
-
 def query_text(text: str, query: str):
     llm = ChatOpenAI(model="gpt-4.1-nano", temperature=0).with_structured_output(
         QueryTextOutput

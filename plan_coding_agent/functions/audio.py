@@ -13,13 +13,11 @@ def speak(text: str):
     print(f"[DEBUG] {round(time.time() - start, 2)} s")
 """
 
-
 def speak(text: str, style: str = "普通に喋ってください"):
     print(f"speak({text}, {style})")
     start = time.time()
     tts(text=text, style=style, voice="coral")
     print(f"[DEBUG] {round(time.time() - start, 2)} s")
-
 
 def transcribe():
     text = stt(timeout_sec=10)
