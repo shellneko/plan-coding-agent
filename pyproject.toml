@@ -28,7 +28,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["plan_coding_agent"]
+include = ["plan_coding_agent*"]
 
 [tool.uv.sources]
 openwakeword = { git = "https://github.com/dscripka/openWakeWord" }
