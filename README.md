@@ -105,14 +105,6 @@ NIC=your-network-interface
 - `NAV2_SERVER_URL`: Navigation2 APIサーバーが待ち受けるポートを決めるためのURLです。通常は`NAV_SERVER_URL`と同じURLを設定します。
 - `NIC`: Go2と通信するネットワークインターフェース名です。例としてLinuxでは`eth0`、macOSでは`en0`などがあります。実際にGo2へ接続しているインターフェースを指定してください。
 
-`.env`にはAPIキーなどの秘密情報が含まれるため、Gitへコミットしないでください。
-
-`go2_api_server.py`は`.env`を直接読み込みます。一方、`nav2_api_server.py`を起動するときは`NAV2_SERVER_URL`がプロセスの環境変数として参照できる必要があります。`.env`を利用する場合は、次のように起動できます。
-
-```bash
-uv run --env-file .env api/nav2_api_server.py
-```
-
 ## AIエージェントの実行
 
 ### 音声で指示する
