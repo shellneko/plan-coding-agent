@@ -77,7 +77,6 @@ Go2制御APIとナビゲーションAPIは、AIエージェント本体とは別
 | ハートを描く | `draw_heart()` | 前脚でハートを描くモーションを実行します。 |
 | ストレッチ | `stretch()` | ストレッチモーションを実行します。 |
 | ダンス | `dance()` | ダンスモーションを実行します。 |
-| 姿勢角の指定 | Go2 APIの`/api/go2/euler` | roll、pitch、yawを指定して本体姿勢を変更します。 |
 
 移動処理にはUnitree SDK2の障害物回避クライアントを使用しています。各モーションが利用できるかどうかは、Go2本体のファームウェアやSDKの対応状況にも依存します。
 
@@ -85,8 +84,6 @@ Go2制御APIとナビゲーションAPIは、AIエージェント本体とは別
 
 | 機能 | AIエージェント用関数 | 説明 |
 | --- | --- | --- |
-| カメラ画像取得 | Go2 APIの`/api/go2/get_image` | Go2のカメラ画像をBase64形式で取得します。 |
-| カメラ画像のバイト取得 | Go2 APIの`/api/go2/get_image_bytes` | Go2のカメラ画像をバイト列として取得します。 |
 | 画像と条件の一致判定 | `query_camera(query)` | カメラ画像が指定した条件に一致するかをVLMで判定します。 |
 | 画像の詳細な分析 | `call_vlm(query)` | カメラ画像と質問をVLMへ渡し、画像の説明や質問への回答を取得します。 |
 | テキストの意味判定 | `query_text(text, query)` | 二つのテキストの意味的な内容が一致するかをLLMで判定します。 |
@@ -106,24 +103,11 @@ Go2制御APIとナビゲーションAPIは、AIエージェント本体とは別
 | 機能 | AIエージェント用関数 | 説明 |
 | --- | --- | --- |
 | 目的地への自律移動 | `nav(target_waypoint)` | 登録済みウェイポイントをNavigation2へ送信して自律移動します。 |
-| 現在位置の取得 | Navigation2 APIの`/api/nav/get_current_pose` | `map`から`base_link`へのTFを使用して現在位置と姿勢を取得します。 |
 | ウェイポイントの登録 | `set_waypoint(waypoint_name)` | 現在位置を指定した名前で`waypoints.yaml`へ保存します。 |
 | ウェイポイントの削除 | `delete_waypoint(waypoint_name)` | 登録済みのウェイポイントを削除します。 |
 | ウェイポイント一覧の取得 | `get_waypoint_list()` | 現在登録されているウェイポイント名を取得します。 |
-| Navigation2ゴールの送信 | Navigation2 APIの`/api/nav/send_goal` | 位置と姿勢を指定して`NavigateToPose`アクションへゴールを送信します。 |
 
 これらのナビゲーション機能を利用するには、ROS 2とNavigation2によるナビゲーションシステムが別途必要です。
-
-### 補助機能
-
-- openWakeWordの学習済みモデルのダウンロード
-- コマンドラインからのウェイポイント登録
-- コマンドラインからの登録済みウェイポイントへの移動
-- `.env`によるAPI URL、OpenAI APIキー、Go2接続NICの設定
-- `uv`によるPython依存関係と実行環境の管理
-- `install.sh`によるCyclone DDSのビルドと依存関係のセットアップ
-
-`jump()`のクライアント関数は定義されていますが、現在のGo2 APIサーバーには対応する`/api/go2/jump`エンドポイントが実装されていないため、上記の利用可能なGo2動作には含めていません。
 
 ## 使用技術
 
