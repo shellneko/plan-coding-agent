@@ -4,6 +4,7 @@ import time
 from typing import Dict
 from dotenv import load_dotenv
 import os
+from urllib.parse import urlparse
 
 import uvicorn
 from fastapi import FastAPI
@@ -134,4 +135,5 @@ def get_image():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    parsed_url = urlparse(os.getenv("GO2_SERVER_URL"))
+    uvicorn.run(app, host="0.0.0.0", port=parsed_url.port)

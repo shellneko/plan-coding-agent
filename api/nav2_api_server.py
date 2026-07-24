@@ -2,6 +2,8 @@ from fastapi import FastAPI
 import uvicorn
 import threading
 from pydantic import BaseModel
+from urllib.parse import urlparse
+import os
 
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
@@ -43,4 +45,5 @@ def get_current_pose():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    parsed_url = urlparse(os.getenv("NAV2_SERVER_URL"))
+    uvicorn.run(app, host="0.0.0.0", port=parsed_url.port)
